@@ -20,7 +20,7 @@ vows.describe('JSLoader').addBatch({
         }
     },
 
-    'the result of getContent with no files': {
+    'the result of getContent with one srcDir and no files': {
         topic: function() {
             var loader = new JSLoader(testSrcDirs);
             loader.getContent([], this.callback);
@@ -32,7 +32,7 @@ vows.describe('JSLoader').addBatch({
         }
     },
 
-    'the result of getContent with one file': {
+    'the result of getContent with one srcDir and one file': {
         topic: function() {
             var loader = new JSLoader(testSrcDirs);
             loader.getContent(['test1.js'], this.callback);
@@ -40,6 +40,17 @@ vows.describe('JSLoader').addBatch({
 
         'is equal to the contents of that file': function(topic) {
             assert.equal(topic, "var a = 1;\n");
+        }
+    },
+
+    'the result of getContent with one srcDir and two files': {
+        topic: function() {
+            var loader = new JSLoader(testSrcDirs);
+            loader.getContent(['test1.js', 'test2.js'], this.callback);
+        },
+
+        'is equal to the contents of both files': function(topic) {
+            assert.equal(topic, "var a = 1;\nvar b = 2;\n");
         }
     }
 }).export(module);

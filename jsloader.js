@@ -18,10 +18,12 @@ JSLoader.prototype.getContent = function(files, callback) {
 };
 
 JSLoader.prototype.loadContent = function() {
-    var srcDir, file;
+    var i, srcDir, file;
     srcDir = this.srcDirs[0];
-    file = this.files[0];
-    this.content = fs.readFileSync(srcDir + '/' + file, 'utf8');
+    this.content = '';
+    for (i = 0; i < this.files.length; i++) {
+        this.content += fs.readFileSync(srcDir + '/' + this.files[i], 'utf8');
+    }
 };
 
 module.exports.JSLoader = JSLoader;
