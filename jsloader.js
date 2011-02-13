@@ -23,6 +23,7 @@ JSLoader.prototype.getContent = function(files, callback) {
     var self = this;
     if (files.length == 0) {
         callback(null, '');
+        return;
     }
     this.readFilesWithDependencies(files, function(err, fileDataList, fileDataMap) {
         var content = self.getFileContentInOrderByDependencies(fileDataList, fileDataMap);
@@ -32,23 +33,43 @@ JSLoader.prototype.getContent = function(files, callback) {
 
 JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
     var self = this,
-        numFilesRead = 0,
         fileDataList = [], //need to guarantee order
-        fileDataMap = {}, //also need fast lookup, so we will use these side-by-side
-        i;
+        fileDataMap = {}; //also need fast lookup, so we will use these side-by-side
 
-    for (i = 0; i < files.length; i++) {
-        self.findFile(files[i], function(err, filePath) {
+    var readFileWithDependencies = function(fileIdx) {
+        var file = files[fileIdx];
+
+        //don't repeat files we've already processed
+        if (fileDataMap[file]) {
+            if (++fileIdx < files.length) {
+                readFileWithDependencies(fileIdx);
+            } else {
+                callback(null, fileDataList, fileDataMap);
+            }
+        }
+
+        self.findFile(file, function(err, filePath) {
+            var fileData;
+
             if (err) throw new Error(err);
             fs.readFile(filePath, 'utf8', function(err, data) {
-                fileDataMap[files[i]] = self.parseFileData(data);
-                fileDataList.push(fileDataMap[files[i]]);
-                if (++numFilesRead == files.length) {
+                
+                fileData = self.parseFileData(data);
+                fileDataMap[file] = fileData;
+                fileDataList.push(fileData);
+
+                //add dependencies to file list
+                files = files.concat(fileData.dependencies);
+
+                if (++fileIdx < files.length) {
+                    readFileWithDependencies(fileIdx);
+                } else {
                     callback(null, fileDataList, fileDataMap);
                 }
             });
         });
-    }
+    };
+    readFileWithDependencies(0);
 };
 
 JSLoader.prototype.parseFileData = function(data) {
