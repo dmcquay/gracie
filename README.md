@@ -13,9 +13,17 @@ This allows you to accomplish the following objectives:
 
 This app is written in node.js, but is really not *for* node.js. You can use it for any web project. It is for clinet-side javascript, not server-side.
 
+#Installation
+
+npm install js-loader@latest
+
 #Synopsis
 
-This won't actually work yet, but it's how I plan to make it work.
+Run the server
+
+    jsloader /home/dmcquay/myproject/js
+
+Request your files
 
     <script type="text/javascript" src="http://js.mysite.com/a.js,b.js,c.js"></script>
 
@@ -27,9 +35,6 @@ Then d.js will be included in the output.
 
 #Planned features
 
-This is *not* ready for use!
-
- * The actual web service (the core logic is in place, but it is not exposed over HTTP yet)
  * Minification
  * GZip
  * Caching
