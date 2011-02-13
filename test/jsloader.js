@@ -68,11 +68,11 @@ vows.describe('JSLoader').addBatch({
     'the result of getContent with one file and one dependency': {
         topic: function() {
             var loader = new JSLoader(testSrcDirs);
-            loader.getContent(['a.js', 'b.js', 'c.js'], this.callback);
+            loader.getContent(['d.js'], this.callback);
         },
 
-        'is equal to the contents of all files': function(topic) {
-            assert.equal(topic, "var a = 1;\nvar b = 2;\nvar c = 3;\n");
+        'is equal to the contents of d and the dependency a': function(topic) {
+            assert.equal(topic, "var a = 1;\nvar d = 4;\n");
         }
     }*/
 }).export(module);

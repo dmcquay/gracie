@@ -1,5 +1,6 @@
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    util = require('util');
 
 var JSLoader = function(srcDirs) {
     if (srcDirs.length == 0) {
@@ -13,31 +14,53 @@ JSLoader.prototype.getContent = function(files, callback) {
         callback(null, '');
         return;
     }
-    this.files = files;
-    this.loadContent(function(err, content) {
+    this.loadContent(files, function(err, content) {
         callback(null, content);
     });
 };
 
-JSLoader.prototype.loadContent = function(callback) {
-    var self = this,
-        content = '',
-        readFileFunc;
+JSLoader.prototype.getContent = function(files, callback) {
+    var self = this;
+    if (files.length == 0) {
+        callback(null, '');
+    }
+    this.readFilesWithDependencies(files, function(err, fileDataList, fileDataMap) {
+        var content = self.getFileContentInOrderByDependencies(fileDataList, fileDataMap);
+        callback(null, content);
+    });
+};
 
-    readFileFunc = function(i) {
-        self.findFile(self.files[i], function(err, filePath) {
+JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
+    var self = this,
+        numFilesRead = 0,
+        fileDataList = [], //need to guarantee order
+        fileDataMap = {}, //also need fast lookup, so we will use these side-by-side
+        i;
+
+    for (i = 0; i < files.length; i++) {
+        self.findFile(files[i], function(err, filePath) {
             if (err) throw new Error(err);
             fs.readFile(filePath, 'utf8', function(err, data) {
-                content += data;
-                if (++i < self.files.length) {
-                    readFileFunc(i);
-                } else {
-                    callback(null, content);
+                fileDataMap[files[i]] = {
+                    content: data
+                };
+                fileDataList.push(fileDataMap[files[i]]);
+                if (++numFilesRead == files.length) {
+                    callback(null, fileDataList, fileDataMap);
                 }
             });
         });
-    };
-    readFileFunc(0);
+    }
+};
+
+JSLoader.prototype.getFileContentInOrderByDependencies = function(fileDataList, fileDataMap) {
+    var content = '',
+        fileData;
+    while (fileDataList.length > 0) {
+        fileData = fileDataList.shift();
+        content += fileData.content;
+    }
+    return content;
 };
 
 JSLoader.prototype.findFile = function(file, callback) {
