@@ -10,16 +10,6 @@ var JSLoader = function(srcDirs) {
 };
 
 JSLoader.prototype.getContent = function(files, callback) {
-    if (typeof(files) === 'undefined' || files.length == 0) {
-        callback(null, '');
-        return;
-    }
-    this.loadContent(files, function(err, content) {
-        callback(null, content);
-    });
-};
-
-JSLoader.prototype.getContent = function(files, callback) {
     var self = this;
     if (files.length == 0) {
         callback(null, '');
