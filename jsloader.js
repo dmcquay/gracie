@@ -41,9 +41,7 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
         self.findFile(files[i], function(err, filePath) {
             if (err) throw new Error(err);
             fs.readFile(filePath, 'utf8', function(err, data) {
-                fileDataMap[files[i]] = {
-                    content: data
-                };
+                fileDataMap[files[i]] = self.parseFileData(data);
                 fileDataList.push(fileDataMap[files[i]]);
                 if (++numFilesRead == files.length) {
                     callback(null, fileDataList, fileDataMap);
@@ -51,6 +49,36 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
             });
         });
     }
+};
+
+JSLoader.prototype.parseFileData = function(data) {
+    var dependencies = [],
+        content = '',
+        foundNonRequireLine = false,
+        i, line, lines;
+    //TODO: don't assume unix style line separator
+    lines = data.split("\n");
+    for (i = 0; i < lines.length; i++) {
+        line = lines[i];
+        if (!foundNonRequireLine && this.isRequireLine(line)) {
+            dependencies.push(this.extractDependency(line));
+        } else {
+            foundNonRequireLine = true;
+            if (line.length > 0) content += line + "\n";
+        }
+    }
+    return {
+        dependencies: dependencies,
+        content: content
+    };
+};
+
+JSLoader.prototype.isRequireLine = function(line) {
+    return /^\/\/require/.test(line);
+};
+
+JSLoader.prototype.extractDependency = function(line) {
+    return line.match(/^\/\/require (.*)$/)[1];
 };
 
 JSLoader.prototype.getFileContentInOrderByDependencies = function(fileDataList, fileDataMap) {
