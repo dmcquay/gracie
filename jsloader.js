@@ -54,7 +54,7 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
             if (err) throw new Error(err);
             fs.readFile(filePath, 'utf8', function(err, data) {
                 
-                fileData = self.parseFileData(data);
+                fileData = self.parseFileData(file, data);
                 fileDataMap[file] = fileData;
                 fileDataList.push(fileData);
 
@@ -72,7 +72,7 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
     readFileWithDependencies(0);
 };
 
-JSLoader.prototype.parseFileData = function(data) {
+JSLoader.prototype.parseFileData = function(file, data) {
     var dependencies = [],
         content = '',
         foundNonRequireLine = false,
@@ -89,6 +89,7 @@ JSLoader.prototype.parseFileData = function(data) {
         }
     }
     return {
+        file: file,
         dependencies: dependencies,
         content: content
     };
@@ -106,10 +107,34 @@ JSLoader.prototype.getFileContentInOrderByDependencies = function(fileDataList, 
     var content = '',
         fileData;
     while (fileDataList.length > 0) {
-        fileData = fileDataList.shift();
+        fileData = this.removeNextFileData(fileDataList);
         content += fileData.content;
     }
     return content;
+};
+
+JSLoader.prototype.removeNextFileData = function(fileDataList) {
+    var i, fileData;
+    for (i = 0; i < fileDataList.length; i++) {
+        if (fileDataList[i].dependencies.length == 0) {
+            fileData = fileDataList.splice(i, 1)[0];
+            this.removeFromAllDependencies(fileDataList, fileData.file);
+            return fileData;
+        }
+    }
+    throw new Error('Unable to resolve dependencies. You probably have a circular dependency or a dependency on a file that is unavailable.');
+};
+
+JSLoader.prototype.removeFromAllDependencies = function(fileDataList, file) {
+    var i, c, dependencies;
+    for (i = 0; i < fileDataList.length; i++) {
+        dependencies = fileDataList[i].dependencies;
+        for (c = 0; c < dependencies.length; c++) {
+            if (dependencies[c] == file) {
+                dependencies.splice(c, 1);
+            }
+        }
+    }
 };
 
 JSLoader.prototype.findFile = function(file, callback) {
