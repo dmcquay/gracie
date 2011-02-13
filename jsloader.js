@@ -28,11 +28,13 @@ JSLoader.prototype.loadContent = function(callback) {
     for (i = 0; i < this.files.length; i++) {
         this.findFile(this.files[i], function(err, filePath) {
             if (err) throw new Error(err);
-            content += fs.readFileSync(filePath, 'utf8');
-            numFilesRead++;
-            if (numFilesRead == self.files.length) {
-                callback(null, content);
-            }
+            fs.readFile(filePath, 'utf8', function(err, data) {
+                content += data;
+                numFilesRead++;
+                if (numFilesRead == self.files.length) {
+                    callback(null, content);
+                }
+            });
         });
     }
 };
