@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs'),
+    path = require('path');
 
 var JSLoader = function(srcDirs) {
     if (srcDirs.length == 0) {
@@ -13,17 +14,39 @@ JSLoader.prototype.getContent = function(files, callback) {
         return;
     }
     this.files = files;
-    this.loadContent();
-    callback(null, this.content);
+    this.loadContent(function(err, content) {
+        callback(null, content);
+    });
 };
 
-JSLoader.prototype.loadContent = function() {
-    var i, srcDir, file;
+JSLoader.prototype.loadContent = function(callback) {
+    var self = this,
+        content = '',
+        numFilesRead = 0,
+        i, srcDir, file;
     srcDir = this.srcDirs[0];
-    this.content = '';
     for (i = 0; i < this.files.length; i++) {
-        this.content += fs.readFileSync(srcDir + '/' + this.files[i], 'utf8');
+        this.findFile(this.files[i], function(err, filePath) {
+            if (err) throw new Error(err);
+            content += fs.readFileSync(filePath, 'utf8');
+            numFilesRead++;
+            if (numFilesRead == self.files.length) {
+                callback(null, content);
+            }
+        });
     }
+};
+
+JSLoader.prototype.findFile = function(file, callback) {
+    var filePath = this.srcDirs[0] + '/' + file;
+
+    path.exists(filePath, function(exists) {
+        if (exists) {
+            callback(null, filePath);
+        } else {
+            callback('cannot find file "' + file + '"');
+        }
+    });
 };
 
 module.exports.JSLoader = JSLoader;
