@@ -35,7 +35,7 @@ vows.describe('JSLoader').addBatch({
     'the result of getContent with one srcDir and one file': {
         topic: function() {
             var loader = new JSLoader([testSrcDirs[0]]);
-            loader.getContent(['test1.js'], this.callback);
+            loader.getContent(['a.js'], this.callback);
         },
 
         'is equal to the contents of that file': function(topic) {
@@ -46,7 +46,7 @@ vows.describe('JSLoader').addBatch({
     'the result of getContent with one srcDir and two files': {
         topic: function() {
             var loader = new JSLoader([testSrcDirs[0]]);
-            loader.getContent(['test1.js', 'test2.js'], this.callback);
+            loader.getContent(['a.js', 'b.js'], this.callback);
         },
 
         'is equal to the contents of both files': function(topic) {
@@ -57,11 +57,22 @@ vows.describe('JSLoader').addBatch({
     'the result of getContent with two srcDirs and three files': {
         topic: function() {
             var loader = new JSLoader(testSrcDirs);
-            loader.getContent(['test1.js', 'test2.js', 'test3.js'], this.callback);
+            loader.getContent(['a.js', 'b.js', 'c.js'], this.callback);
         },
 
         'is equal to the contents of all files': function(topic) {
             assert.equal(topic, "var a = 1;\nvar b = 2;\nvar c = 3;\n");
         }
-    }
+    }/*,
+
+    'the result of getContent with one file and one dependency': {
+        topic: function() {
+            var loader = new JSLoader(testSrcDirs);
+            loader.getContent(['a.js', 'b.js', 'c.js'], this.callback);
+        },
+
+        'is equal to the contents of all files': function(topic) {
+            assert.equal(topic, "var a = 1;\nvar b = 2;\nvar c = 3;\n");
+        }
+    }*/
 }).export(module);

@@ -22,21 +22,22 @@ JSLoader.prototype.getContent = function(files, callback) {
 JSLoader.prototype.loadContent = function(callback) {
     var self = this,
         content = '',
-        numFilesRead = 0,
-        i, srcDir, file;
-    srcDir = this.srcDirs[0];
-    for (i = 0; i < this.files.length; i++) {
-        this.findFile(this.files[i], function(err, filePath) {
+        readFileFunc;
+
+    readFileFunc = function(i) {
+        self.findFile(self.files[i], function(err, filePath) {
             if (err) throw new Error(err);
             fs.readFile(filePath, 'utf8', function(err, data) {
                 content += data;
-                numFilesRead++;
-                if (numFilesRead == self.files.length) {
+                if (++i < self.files.length) {
+                    readFileFunc(i);
+                } else {
                     callback(null, content);
                 }
             });
         });
-    }
+    };
+    readFileFunc(0);
 };
 
 JSLoader.prototype.findFile = function(file, callback) {
