@@ -40,15 +40,22 @@ JSLoader.prototype.loadContent = function(callback) {
 };
 
 JSLoader.prototype.findFile = function(file, callback) {
-    var filePath = this.srcDirs[0] + '/' + file;
-
-    path.exists(filePath, function(exists) {
-        if (exists) {
-            callback(null, filePath);
-        } else {
-            callback('cannot find file "' + file + '"');
-        }
-    });
+    var self = this,
+        checkFileFunc;
+    
+    checkFileFunc = function(i) {
+        var filePath = self.srcDirs[i] + '/' + file;
+        path.exists(filePath, function(exists) {
+            if (exists) {
+                callback(null, filePath);
+            } else if (++i < self.srcDirs.length) {
+                checkFileFunc(i);
+            } else {
+                callback('cannot find file "' + file + '"');
+            }
+        });
+    }
+    checkFileFunc(0);
 };
 
 module.exports.JSLoader = JSLoader;

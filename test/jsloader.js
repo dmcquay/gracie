@@ -52,7 +52,7 @@ vows.describe('JSLoader').addBatch({
         'is equal to the contents of both files': function(topic) {
             assert.equal(topic, "var a = 1;\nvar b = 2;\n");
         }
-    }/*,
+    },
 
     'the result of getContent with two srcDirs and three files': {
         topic: function() {
@@ -63,5 +63,5 @@ vows.describe('JSLoader').addBatch({
         'is equal to the contents of all files': function(topic) {
             assert.equal(topic, "var a = 1;\nvar b = 2;\nvar c = 3;\n");
         }
-    }*/
+    }
 }).export(module);
