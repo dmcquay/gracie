@@ -1,7 +1,7 @@
 var vows = require('vows'),
     assert = require('assert'),
     JSLoader = require('.././jsloader.js').JSLoader,
-    testSrcDirs = ['./test-src-1', './test-src-2'];
+    testSrcDirs = ['./test/test-src-1', './test/test-src-2'];
 
 vows.describe('JSLoader').addBatch({
     'when we create a new JSLoader': {

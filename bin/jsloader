@@ -1,6 +1,8 @@
-var JSLoader = require('./jsloader').JSLoader,
+#!/usr/bin/env node
+
+var JSLoader = require('js-loader').JSLoader,
     url = require('url'),
-    loader = new JSLoader(['./test/test-src-1', './test/test-src-2']);
+    loader = new JSLoader(process.argv.slice(2));
 
 var http = require('http');
 http.createServer(function (req, res) {
@@ -10,5 +12,5 @@ http.createServer(function (req, res) {
         res.writeHead(200, {'Content-Type': 'text/javascript'});
         res.end(content);
     });
-}).listen(8124, "127.0.0.1");
-console.log('Server running at http://127.0.0.1:8124/');
+}).listen(3852, "127.0.0.1");
+console.log('Server running at http://127.0.0.1:3852/');
