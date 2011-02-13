@@ -19,6 +19,12 @@ This won't actually work yet, but it's how I plan to make it work.
 
     <script type="text/javascript" src="http://js.mysite.com/a.js,b.js,c.js"></script>
 
+And if the first line of c.js looks like this:
+
+    //require d.js
+
+Then d.js will be included in the output.
+
 #Planned features
 
 This is *not* ready for use!
