@@ -1,6 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
-    util = require('util');
+    util = require('util'),
+    uglify = require('uglify-js');
 
 var JSLoader = function(srcDirs, opt) {
     if (srcDirs.length == 0) {
@@ -24,8 +25,11 @@ JSLoader.prototype.setOptions = function(opt) {
     }
 };
 
-JSLoader.prototype.getContent = function(files, callback) {
+JSLoader.prototype.getContent = function(files, callback, minify) {
     var self = this;
+
+    if (typeof(minify) === 'undefined') minify = false;
+
     if (files.length == 0) {
         callback(null, '');
         return;
@@ -41,6 +45,12 @@ JSLoader.prototype.getContent = function(files, callback) {
             util.print('srcDirs' + self.srcDirs.join(', ') + "\n");
         }
         var content = self.getFileContentInOrderByDependencies(fileDataList, fileDataMap);
+        if (minify) {
+            content = uglify.parser.parse(content);
+            content = uglify.uglify.ast_mangle(content);
+            content = uglify.uglify.ast_squeeze(content);
+            content = uglify.uglify.gen_code(content);
+        }
         callback(null, content);
     });
 };

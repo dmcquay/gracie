@@ -6,11 +6,14 @@ var JSLoader = require('js-loader').JSLoader,
 
 var http = require('http');
 http.createServer(function (req, res) {
-    var files, content;
-    files = url.parse(req.url).pathname.slice(1).split(',');
+    var files, content, query;
+    query = url.parse(req.url, true).query;
+    files = query.sources.split(',');
+    minify = false;
+    if (query.minify) minify = true;
     content = loader.getContent(files, function(err, content) {
         res.writeHead(200, {'Content-Type': 'text/javascript'});
         res.end(content);
-    });
+    }, minify);
 }).listen(3852, "127.0.0.1");
 console.log('Server running at http://127.0.0.1:3852/');

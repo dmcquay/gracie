@@ -1,13 +1,16 @@
-{
-  "name": "js-loader",
-  "description": "On-the-fly javascript contacatenator, minifier and dependency resolver for client-side JS",
-  "version": "0.0.2",
-  "homepage": "https://github.com/dmcquay/node-js-loader",
-  "repository": "git://github.com/dmcquay/node-js-loader.git",
-  "author": "Dustin McQuay <dmcquay@gmail.com> (http://www.synchrosinteractive.com/)",
-  "main": "jsloader",
-  "directories": { "lib": "" },
-  "scripts": { "test": "vows test/jsloader.js" },
-  "bin": { "jsloader": "./bin/jsloader" },
-  "engines": { "node": "*" }
+{ "name": "js-loader"
+, "description": "On-the-fly javascript contacatenator, minifier and dependency resolver for client-side JS"
+, "version": "0.0.3"
+, "homepage": "https://github.com/dmcquay/node-js-loader"
+, "repository": "git://github.com/dmcquay/node-js-loader.git"
+, "author": "Dustin McQuay <dmcquay@gmail.com> (http://www.synchrosinteractive.com/)"
+, "main": "jsloader"
+, "directories": { "lib": "" }
+, "scripts": { "test": "vows test/jsloader.js" }
+, "bin": { "jsloader": "./bin/jsloader" }
+, "dependencies" :
+  { "uglify-js" : "=0.0.4"
+  , "vows" : "=0.5.6"
+  }
+, "engines": { "node": "*" }
 }

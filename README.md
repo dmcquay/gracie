@@ -25,7 +25,8 @@ Run the server
 
 Request your files
 
-    <script type="text/javascript" src="http://js.mysite.com/a.js,b.js,c.js"></script>
+    <script type="text/javascript" src="http://js.mysite.com/?sources=a.js,b.js,c.js"></script>
+
 
 And if the first line of c.js looks like this:
 
@@ -33,9 +34,16 @@ And if the first line of c.js looks like this:
 
 Then d.js will be included in the output.
 
+You can also request minfied output
+
+    <script type="text/javascript" src="http://js.mysite.com/?sources=a.js,b.js,c.js&minify=1"></script>
+
+And you can have multiple source directories
+
+    jsloader /home/dmcquay/myproject/js1 /home/dmcquay/myproject/js2
+
 #Planned features
 
- * Minification
- * GZip
  * Caching
- * Conditional Get support
+ * GZip (maybe use Connect?)
+ * Conditional Get support (maybe use Connect?)
