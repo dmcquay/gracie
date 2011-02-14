@@ -1,6 +1,6 @@
 {
   "name": "js-loader",
-  "description": "On-the-fly javascript contacatenator/minifier with dependency resolution. Happens to be written in node.js, but is by no means limited to node.js projects.",
+  "description": "On-the-fly javascript contacatenator, minifier and dependency resolver for client-side JS",
   "version": "0.0.1",
   "homepage": "https://github.com/dmcquay/node-js-loader",
   "repository": "git://github.com/dmcquay/node-js-loader.git",
