@@ -65,13 +65,12 @@ The connect middleware will also make the jsloader instance available on all req
 JavaScript content on-the-fly and embed it directly in the page. To do this, you'll want to generate
 the JavaScript in your controller and pass it to your view.
 
+    var minify = true;
     req.jsloader.getContent(['cool.js'], function(err, jsCode) {
         res.render('myview.ejs', {
-            locals: {
-                jsCode: jsCode
-            }   
+            locals: { jsCode: jsCode }   
         }); 
-    });
+    }, minify);
 
 Then, in your view, display the content. Be sure not to escape it.
 
