@@ -19,6 +19,8 @@ npm install js-loader@latest
 
 #Synopsis
 
+##Using as a standalone server
+
 Run the server
 
     jsloader /home/dmcquay/myproject/js
@@ -26,7 +28,6 @@ Run the server
 Request your files
 
     <script type="text/javascript" src="http://js.mysite.com/?sources=a.js,b.js,c.js"></script>
-
 
 And if the first line of c.js looks like this:
 
@@ -41,6 +42,38 @@ You can also request minfied output
 And you can have multiple source directories
 
     jsloader /home/dmcquay/myproject/js1 /home/dmcquay/myproject/js2
+
+##Advanced integration with Node.js projects
+
+If your project is written in Node.js and you are using connect, then you have two more options. First,
+set up the connect middleware.
+
+    app.configure(function() {
+        ...
+        require('js-loader').JSLoader.connect('/js', ['/path/to/js'])
+        ...
+    });
+
+The first parameter is the pathname that the jsloader should handle. The second is an array of javascript
+source directories. With this in place, you can use your existing connect server to serve your js.
+
+    <script type="text/javascript" src="http://www.mysite.com/js?sources=a.js,b.js,c.js"></script>
+
+The connect middleware will also make the jsloader instance available on all requests so you can request
+JavaScript content on-the-fly and embed it directly in the page. To do this, you'll want to generate
+the JavaScript in your controller and pass it to your view.
+
+    req.jsloader.getContent(['cool.js'], function(err, jsCode) {
+        res.render('myview.ejs', {
+            locals: {
+                jsCode: jsCode
+            }   
+        }); 
+    });
+
+Then, in your view, display the content. Be sure not to escape it.
+
+    <script type="text/javascript"><%- jsCode %></script>
 
 #Planned features
 

@@ -1,7 +1,8 @@
 var fs = require('fs'),
     path = require('path'),
     util = require('util'),
-    uglify = require('uglify-js');
+    uglify = require('uglify-js'),
+    url = require('url');
 
 var JSLoader = function(srcDirs, opt) {
     if (srcDirs.length == 0) {
@@ -193,6 +194,31 @@ JSLoader.prototype.findFile = function(file, callback) {
         });
     }
     checkFileFunc(0);
+};
+
+JSLoader.handleRequest = function(req, res, jsloader) {
+    var files, content, query;
+    query = url.parse(req.url, true).query;
+    files = query.sources.split(',');
+    minify = false;
+    if (query.minify) minify = true;
+    content = jsloader.getContent(files, function(err, content) {
+        res.writeHead(200, {'Content-Type': 'text/javascript'});
+        res.end(content);
+    }, minify);
+};
+
+JSLoader.connect = function(urlPath, srcDirs) {
+    var jsloader = new JSLoader(srcDirs);
+    return function(req, res, next) {
+        var pathname = url.parse(req.url).pathname;
+        if (pathname === urlPath) {
+            JSLoader.handleRequest(req, res, jsloader);
+        } else {
+            req.jsloader = jsloader;
+            next();
+        }
+    };  
 };
 
 module.exports.JSLoader = JSLoader;

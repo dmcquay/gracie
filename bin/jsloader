@@ -1,19 +1,10 @@
 #!/usr/bin/env node
 
 var JSLoader = require('js-loader').JSLoader,
-    url = require('url'),
-    loader = new JSLoader(process.argv.slice(2));
+    jsloader = new JSLoader(process.argv.slice(2));
 
 var http = require('http');
 http.createServer(function (req, res) {
-    var files, content, query;
-    query = url.parse(req.url, true).query;
-    files = query.sources.split(',');
-    minify = false;
-    if (query.minify) minify = true;
-    content = loader.getContent(files, function(err, content) {
-        res.writeHead(200, {'Content-Type': 'text/javascript'});
-        res.end(content);
-    }, minify);
+    JSLoader.handleRequest(req, res, jsloader);
 }).listen(3852, "127.0.0.1");
 console.log('Server running at http://127.0.0.1:3852/');
