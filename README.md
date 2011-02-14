@@ -21,9 +21,11 @@ npm install js-loader@latest
 
 ##Using as a standalone server
 
+Usage: jsloader ADDRESS PORT JS_SOURCE_DIR [JS_SOURCE_DIR...]
+
 Run the server
 
-    jsloader /home/dmcquay/myproject/js
+    jsloader 127.0.0.1 1234 /path/to/js
 
 Request your files
 
@@ -41,7 +43,7 @@ You can also request minfied output
 
 And you can have multiple source directories
 
-    jsloader /home/dmcquay/myproject/js1 /home/dmcquay/myproject/js2
+    jsloader 127.0.0.1 1234 /path/to/js1 /path/to/js2
 
 ##Advanced integration with Node.js projects
 
