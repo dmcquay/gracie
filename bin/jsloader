@@ -1,10 +1,27 @@
 #!/usr/bin/env node
 
-var JSLoader = require('js-loader').JSLoader,
-    jsloader = new JSLoader(process.argv.slice(2));
+var JSLoader = require('js-loader').JSLoader;
 
-var http = require('http');
-http.createServer(function (req, res) {
-    JSLoader.handleRequest(req, res, jsloader);
-}).listen(3852, "127.0.0.1");
-console.log('Server running at http://127.0.0.1:3852/');
+if (process.argv.length < 5) {
+    usage("Not enough arguments");
+}
+
+var address = process.argv[2],
+    port = process.argv[3],
+    jsloader = new JSLoader(process.argv.slice(4));
+
+try {
+    var http = require('http');
+    http.createServer(function (req, res) {
+        JSLoader.handleRequest(req, res, jsloader);
+    }).listen(port, address);
+    console.log('Server running at http://' + address + ':' + port + '/');
+} catch (err) {
+    usage(err);
+}
+
+function usage(errMsg) {
+    console.log("ERROR: " + errMsg + "\n");
+    console.log("Usage: jsloader ADDRESS PORT SRC_DIR [SRC_DIR...]\n");
+    process.exit();
+}
