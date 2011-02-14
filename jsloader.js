@@ -7,6 +7,21 @@ var JSLoader = function(srcDirs, opt) {
         throw new Error('no source directories provided');
     }
     this.srcDirs = srcDirs;
+    this.initOptions();
+    this.setOptions(opt);
+};
+
+JSLoader.prototype.initOptions = function() {
+    this.opt = {
+        debug: false
+    };
+};
+
+JSLoader.prototype.setOptions = function(opt) {
+    opt = opt || {};
+    for (var key in opt) {
+        this.opt[key] = opt[key];
+    }
 };
 
 JSLoader.prototype.getContent = function(files, callback) {
@@ -16,6 +31,15 @@ JSLoader.prototype.getContent = function(files, callback) {
         return;
     }
     this.readFilesWithDependencies(files, function(err, fileDataList, fileDataMap) {
+        var i, fileNames;
+        if (self.opt.debug) {
+            fileNames = [];
+            for (i = 0; i < fileDataList.length; i++) {
+                fileNames.push(fileDataList[i].file);
+            }
+            util.print('File Names: ' + fileNames.join(', ') + "\n");
+            util.print('srcDirs' + self.srcDirs.join(', ') + "\n");
+        }
         var content = self.getFileContentInOrderByDependencies(fileDataList, fileDataMap);
         callback(null, content);
     });
@@ -29,12 +53,21 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
     var readFileWithDependencies = function(fileIdx) {
         var file = files[fileIdx];
 
+        if (self.opt.debug) {
+            util.print("Reading files with dependencies. fileIdx: " + fileIdx + "\n");
+        }
+
         //don't repeat files we've already processed
         if (fileDataMap[file]) {
-            if (++fileIdx < files.length) {
-                readFileWithDependencies(fileIdx);
+            if (fileIdx < files.length - 1) {
+                readFileWithDependencies(fileIdx + 1);
+                return;
             } else {
+                if (self.opt.debug) {
+                    util.print("Calling callback after reading files with dependencies (upper call)\n");
+                }
                 callback(null, fileDataList, fileDataMap);
+                return;
             }
         }
 
@@ -51,10 +84,15 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
                 //add dependencies to file list
                 files = files.concat(fileData.dependencies);
 
-                if (++fileIdx < files.length) {
-                    readFileWithDependencies(fileIdx);
+                if (fileIdx < files.length - 1) {
+                    readFileWithDependencies(fileIdx + 1);
+                    return;
                 } else {
+                    if (self.opt.debug) {
+                        util.print("Calling callback after reading files with dependencies (lower call)\n");
+                    }
                     callback(null, fileDataList, fileDataMap);
+                    return;
                 }
             });
         });

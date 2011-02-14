@@ -80,7 +80,7 @@ vows.describe('JSLoader').addBatch({
     'the result of getContent with a duplicate dependency': {
         topic: function() {
             var loader = new JSLoader([testSrc + '/duplicate-dependency']);
-            loader.getContent(['a.js'], this.callback);
+            loader.getContent(['a.js', 'c.js'], this.callback);
         },
 
         'contains the content of the dependency only once': function(topic) {
@@ -96,6 +96,17 @@ vows.describe('JSLoader').addBatch({
 
         'contains both dependencies': function(topic) {
             assert.equal(topic, "b\nc\na\n");
+        }
+    },
+
+    'the result of getContent in complex example (chat)': {
+        topic: function() {
+            var loader = new JSLoader([testSrc + '/chat']);
+            loader.getContent(['chat.js'], this.callback);
+        },
+
+        'contains correct output': function(topic) {
+            assert.equal(topic, "vend/jquery-1.4.2.min.js\nvend/jquery.cookie.js\nPCHAT/controller/Chat.js\nchat.js\n");
         }
     }
 }).export(module);
