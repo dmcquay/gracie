@@ -2,7 +2,7 @@ var fs = require('fs'),
     path = require('path'),
     util = require('util');
 
-var JSLoader = function(srcDirs) {
+var JSLoader = function(srcDirs, opt) {
     if (srcDirs.length == 0) {
         throw new Error('no source directories provided');
     }
@@ -98,6 +98,7 @@ JSLoader.prototype.getFileContentInOrderByDependencies = function(fileDataList, 
         fileData;
     while (fileDataList.length > 0) {
         fileData = this.removeNextFileData(fileDataList);
+        //content += '// File: ' + fileData.file + "\n";
         content += fileData.content;
     }
     return content;

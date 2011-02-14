@@ -1,7 +1,8 @@
 var vows = require('vows'),
     assert = require('assert'),
     JSLoader = require('.././jsloader.js').JSLoader,
-    testSrcDirs = ['./test/test-src-1', './test/test-src-2'];
+    testSrc = './test/test-src',
+    testSrcDirs = [testSrc + '/test-src-1', testSrc + '/test-src-2'];
 
 vows.describe('JSLoader').addBatch({
     'when we create a new JSLoader': {
@@ -73,6 +74,17 @@ vows.describe('JSLoader').addBatch({
 
         'is equal to the contents of d and the dependency a': function(topic) {
             assert.equal(topic, "var a = 1;\nvar d = 4;\n");
+        }
+    },
+
+    'the result of getContent with a duplicate dependency': {
+        topic: function() {
+            var loader = new JSLoader([testSrc + '/duplicate-dependency']);
+            loader.getContent(['a.js'], this.callback);
+        },
+
+        'contains the content of the dependency only once': function(topic) {
+            assert.equal(topic, "c\nb\na\n");
         }
     }
 }).export(module);
