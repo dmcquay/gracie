@@ -86,5 +86,16 @@ vows.describe('JSLoader').addBatch({
         'contains the content of the dependency only once': function(topic) {
             assert.equal(topic, "c\nb\na\n");
         }
+    },
+
+    'the result of getContent with multiple dependencies in one file': {
+        topic: function() {
+            var loader = new JSLoader([testSrc + '/multi-dependencies']);
+            loader.getContent(['a.js'], this.callback);
+        },
+
+        'contains both dependencies': function(topic) {
+            assert.equal(topic, "b\nc\na\n");
+        }
     }
 }).export(module);
