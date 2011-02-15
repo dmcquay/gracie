@@ -37,6 +37,7 @@ JSLoader.prototype.getContent = function(files, callback, minify) {
     }
     this.readFilesWithDependencies(files, function(err, fileDataList, fileDataMap) {
         var i, fileNames;
+        if (err) return callback(err);
         if (self.opt.debug) {
             fileNames = [];
             for (i = 0; i < fileDataList.length; i++) {
@@ -85,7 +86,8 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
         self.findFile(file, function(err, filePath) {
             var fileData;
 
-            if (err) throw new Error(err);
+            if (err) return callback(err);
+
             fs.readFile(filePath, 'utf8', function(err, data) {
                 
                 fileData = self.parseFileData(file, data);
@@ -199,12 +201,24 @@ JSLoader.prototype.findFile = function(file, callback) {
 JSLoader.handleRequest = function(req, res, jsloader) {
     var files, content, query;
     query = url.parse(req.url, true).query;
+
+    if (typeof(query) === 'undefined' || typeof(query.sources) === 'undefined' || /\.\./.test(query.sources)) {
+        res.writeHead(500, {'Content-Type': 'text/plain'});
+        res.end("ERROR: Missing or invalid sources parameter.\n");
+        return;
+    }
+
     files = query.sources.split(',');
     minify = false;
     if (query.minify) minify = true;
     content = jsloader.getContent(files, function(err, content) {
-        res.writeHead(200, {'Content-Type': 'text/javascript'});
-        res.end(content);
+        if (err) {
+            res.writeHead(500, {'Content-Type': 'text/plain'});
+            res.end("ERROR: " + err + "\n");
+        } else {
+            res.writeHead(200, {'Content-Type': 'text/javascript'});
+            res.end(content);
+        }
     }, minify);
 };
 
