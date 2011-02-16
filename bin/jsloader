@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-var DEFAULT_PORT = '7763',
+var connect = require('connect'),
     JSLoader = require('js-loader').JSLoader,
-    argv = require('optimist').argv;
+    argv = require('optimist').argv,
+    DEFAULT_PORT = '7763',
+    server;
 
 if (argv.help) {
     usage();
@@ -17,10 +19,12 @@ var host = argv.host || argv.h,
     jsloader = new JSLoader(argv._);
 
 try {
-    var http = require('http');
-    http.createServer(function (req, res) {
+    server = connect.createServer();
+    server.use(connect.logger());
+    server.use(function (req, res) {
         JSLoader.handleRequest(req, res, jsloader);
-    }).listen(port, host);
+    });
+    server.listen(port, host);
     console.log('Server running at http://' + (host ? host : '*') + ':' + port + '/');
 } catch (err) {
     usage(err);
