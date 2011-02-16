@@ -1,6 +1,6 @@
 { "name": "js-loader"
 , "description": "On-the-fly javascript contacatenator, minifier and dependency resolver for client-side JS"
-, "version": "0.0.4"
+, "version": "0.1.0"
 , "homepage": "https://github.com/dmcquay/node-js-loader"
 , "repository": "git://github.com/dmcquay/node-js-loader.git"
 , "author": "Dustin McQuay <dmcquay@gmail.com> (http://www.synchrosinteractive.com/)"
