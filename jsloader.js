@@ -11,6 +11,8 @@ var JSLoader = function(srcDirs, opt) {
     this.srcDirs = srcDirs;
     this.initOptions();
     this.setOptions(opt);
+    this.cache = {};
+    this.cacheFileDependencies = {};
 };
 
 JSLoader.prototype.initOptions = function() {
@@ -27,7 +29,8 @@ JSLoader.prototype.setOptions = function(opt) {
 };
 
 JSLoader.prototype.getContent = function(files, callback, minify) {
-    var self = this;
+    var self = this,
+        content;
 
     if (typeof(minify) === 'undefined') minify = false;
 
@@ -35,18 +38,18 @@ JSLoader.prototype.getContent = function(files, callback, minify) {
         callback(null, '');
         return;
     }
+
+    //cache stuff
+    var cacheKey = files.join(',') + (minify ? '|min' : '');
+    content = this.cache[cacheKey];
+    if (content) return callback(null, content);
+
     this.readFilesWithDependencies(files, function(err, fileDataList, fileDataMap) {
-        var i, fileNames;
+        var i;
+
         if (err) return callback(err);
-        if (self.opt.debug) {
-            fileNames = [];
-            for (i = 0; i < fileDataList.length; i++) {
-                fileNames.push(fileDataList[i].file);
-            }
-            util.print('File Names: ' + fileNames.join(', ') + "\n");
-            util.print('srcDirs' + self.srcDirs.join(', ') + "\n");
-        }
-        var content = self.getFileContentInOrderByDependencies(fileDataList, fileDataMap);
+
+        content = self.getFileContentInOrderByDependencies(fileDataList, fileDataMap);
         if (minify) {
             content = uglify.parser.parse(content);
             content = uglify.uglify.ast_mangle(content);
@@ -54,6 +57,23 @@ JSLoader.prototype.getContent = function(files, callback, minify) {
             content = uglify.uglify.gen_code(content);
         }
         callback(null, content);
+
+        //cache stuff
+        //if (self.opt.debug) console.log('hi');
+        self.cache[cacheKey] = content;
+        for (i = 0; i < fileDataList.length; i++) {
+            if (!self.cacheFileDependencies[fileDataList[i].filePath]) {
+                self.cacheFileDependencies[fileDataList[i].filePath] = [];
+                (function(filePath) {
+                    fs.watchFile(filePath, function(curr, prev) {
+                        //if (self.opt.debug) console.log(filePath);
+                        var cacheKey = self.cacheFileDependencies[filePath];
+                        delete self.cache[cacheKey];
+                    });
+                })(fileDataList[i].filePath);
+            }
+            self.cacheFileDependencies[fileDataList[i].filePath].push(cacheKey);
+        }
     });
 };
 
@@ -90,7 +110,9 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
 
             fs.readFile(filePath, 'utf8', function(err, data) {
                 
-                fileData = self.parseFileData(file, data);
+                fileData = self.parseFileData(data);
+                fileData.file = file;
+                fileData.filePath = filePath;
                 fileDataMap[file] = fileData;
                 fileDataList.push(fileData);
 
@@ -113,7 +135,7 @@ JSLoader.prototype.readFilesWithDependencies = function(files, callback) {
     readFileWithDependencies(0);
 };
 
-JSLoader.prototype.parseFileData = function(file, data) {
+JSLoader.prototype.parseFileData = function(data) {
     var dependencies = [],
         content = '',
         foundNonRequireLine = false,
@@ -130,7 +152,6 @@ JSLoader.prototype.parseFileData = function(file, data) {
         }
     }
     return {
-        file: file,
         dependencies: dependencies,
         content: content
     };
@@ -146,6 +167,7 @@ JSLoader.prototype.extractDependency = function(line) {
 
 JSLoader.prototype.getFileContentInOrderByDependencies = function(fileDataList, fileDataMap) {
     var content = '',
+        fileDataList = fileDataList.slice(0),
         fileData;
     while (fileDataList.length > 0) {
         fileData = this.removeNextFileData(fileDataList);
