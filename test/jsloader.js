@@ -9,7 +9,7 @@ var vows = require('vows'),
 
 vows.describe('JSLoader').addBatch({
     'when we create a new JSLoader': {
-        topic: function() { return new JSLoader([testSrcDirs[0]]) },
+        topic: function() { return new JSLoader(testSrcDirs.concat(['/test/with/extra/slash/'])) },
 
         'we get an instance of JSLoader': function(topic) {
             assert.ok(topic instanceof JSLoader);
@@ -21,6 +21,11 @@ vows.describe('JSLoader').addBatch({
 
         'srcDirs is an array': function(topic) {
             assert.ok(topic.srcDirs instanceof Array);
+        },
+
+        'extra slash is removed from last srcDir': function(topic) {
+            var dir = topic.srcDirs[topic.srcDirs.length-1];
+            assert.equal(dir, '/test/with/extra/slash');
         }
     },
 

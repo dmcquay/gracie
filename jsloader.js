@@ -8,11 +8,21 @@ var JSLoader = function(srcDirs, opt) {
     if (srcDirs.length == 0) {
         throw new Error('no source directories provided');
     }
-    this.srcDirs = srcDirs;
+    this.setSourceDirectories(srcDirs);
     this.initOptions();
     this.setOptions(opt);
     this.cache = {};
     this.cacheFileDependencies = {};
+};
+
+JSLoader.prototype.setSourceDirectories = function(srcDirs) {
+    srcDirs = srcDirs.slice(0);
+    for (var i = 0; i < srcDirs.length; i++) {
+        if (/\/$/.test(srcDirs[i])) {
+            srcDirs[i] = srcDirs[i].substring(0, srcDirs[i].length - 1);
+        }
+    }
+    this.srcDirs = srcDirs;
 };
 
 JSLoader.prototype.initOptions = function() {
@@ -238,7 +248,7 @@ JSLoader.handleRequest = function(req, res, jsloader) {
             res.writeHead(500, {'Content-Type': 'text/plain'});
             res.end("ERROR: " + err + "\n");
         } else {
-            res.writeHead(200, {'Content-Type': 'text/javascript'});
+            res.writeHead(200, {'Content-Type': 'application/x-javascript'});
             res.end(content);
         }
     }, minify);
