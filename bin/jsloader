@@ -21,6 +21,8 @@ var host = argv.host || argv.h,
 try {
     server = connect.createServer();
     server.use(connect.logger());
+    server.use(connect.gzip());
+    server.use(connect.conditionalGet());
     server.use(function (req, res) {
         JSLoader.handleRequest(req, res, jsloader);
     });
