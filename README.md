@@ -76,8 +76,8 @@ Then, in your view, display the content. Be sure not to escape it.
 
     <script type="text/javascript"><%- jsCode %></script>
 
-#Planned features
+#Tech Details about the bundled server
 
- * Caching
- * GZip (maybe use Connect?)
- * Conditional Get support (maybe use Connect?)
+ * Supports Conditional Gets.
+ * Supports GZip compression.
+ * Requests are cached. Cache is expired as needed when underlying files are modified.
