@@ -1,8 +1,12 @@
 var vows = require('vows'),
     assert = require('assert'),
+    fs = require('fs'),
+    path = require('path'),
+    temp = require('temp'),
     ResponseCache = require('../lib/responseCache').ResponseCache,
     Response = require('../lib/response').Response,
-    Request = require('../lib/request').Request;
+    Request = require('../lib/request').Request,
+    File = require('../lib/file').File;
 
 vows.describe('ResponseCache').addBatch({
     'when we create a new ResponseCache': {
@@ -15,12 +19,21 @@ vows.describe('ResponseCache').addBatch({
     
     'when we put a reponse': {
     	topic: function() {
-    		var cache = new ResponseCache(),
-    			request = new Request(['a.js']),
-    			response = new Response();
-    		response.content = 'abcd';
-    		cache.put(request, response);
-    		return cache.get(request);
+            var self = this;
+            temp.mkdir('jsloader-test', function(err, dirPath) {
+                var filePath = path.join(dirPath, "a.js");
+                fs.writeFile(filePath, "abcd", function(err) {
+                    var cache = new ResponseCache(),
+                        request = new Request(),
+                        response = new Response();
+                        file = new File('a.js');
+                    file.resolvedPath = filePath;
+                    request.files = [file];
+                    response.content = 'abcd';
+                    cache.put(request, response);
+                    self.callback(null, cache.get(request));
+                });
+            });
     	},
     	
     	'we can get it back out with get': function(response) {

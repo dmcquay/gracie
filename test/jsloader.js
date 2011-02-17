@@ -116,26 +116,5 @@ vows.describe('JSLoader').addBatch({
         'contains correct output': function(topic) {
             assert.equal(topic, "vend/jquery-1.4.2.min.js\nvend/jquery.cookie.js\nPCHAT/controller/Chat.js\nchat.js\n");
         }
-    },
-
-    'a cached result is expired when a contained file is chagned': {
-        topic: function() {
-            var self = this;
-            temp.mkdir('jsloader-test', function(err, dirPath) {
-                var fileName = path.join(dirPath, "a.js");
-                var loader = new JSLoader([dirPath]);
-                fs.writeFileSync(fileName, "a\n");
-                loader.getContent(['a.js'], function(err, content) {
-                    fs.writeFileSync(fileName, "b\n");
-                    loader.getContent(['a.js'], function(err, content) {
-                        self.callback(null, content);
-                    });
-                });
-            });
-        },
-
-        'contains the updated contents of the file': function(topic) {
-            assert.equal(topic, "b\n");
-        }
     }
 }).export(module);
