@@ -39,5 +39,32 @@ vows.describe('ResponseCache').addBatch({
     	'we can get it back out with get': function(response) {
     		assert.equal(response.content, 'abcd');
     	}
+    },
+
+    'when we put a reponse & change the file': {
+    	topic: function() {
+            var self = this;
+            temp.mkdir('jsloader-test', function(err, dirPath) {
+                var filePath = path.join(dirPath, "a.js");
+                fs.writeFile(filePath, "abcd", function(err) {
+                    var cache = new ResponseCache(),
+                        request = new Request(),
+                        response = new Response();
+                        file = new File('a.js');
+                    file.resolvedPath = filePath;
+                    request.files = [file];
+                    response.content = 'abcd';
+                    cache.put(request, response);
+                    fs.watchFile(filePath, function(oldStats, newStats) {
+                        self.callback(null, cache.get(request));
+                    });
+                    fs.writeFile(filePath, "abcde", function(err) {});
+                });
+            });
+    	},
+    	
+    	'the cache is expired': function(response) {
+    		assert.isUndefined(response);
+    	}
     }
 }).export(module);

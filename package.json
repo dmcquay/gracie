@@ -6,7 +6,7 @@
 , "author": "Dustin McQuay <dmcquay@gmail.com> (http://www.synchrosinteractive.com/)"
 , "main": "lib/main"
 , "directories": { "lib": "" }
-, "scripts": { "test": "vows test/jsloader.js" }
+, "scripts": { "test": "vows test/*.js" }
 , "bin": { "jsloader": "./bin/jsloader" }
 , "dependencies" :
   { "connect": "=0.5.8",
