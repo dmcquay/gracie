@@ -4,7 +4,7 @@
 , "homepage": "https://github.com/dmcquay/node-js-loader"
 , "repository": "git://github.com/dmcquay/node-js-loader.git"
 , "author": "Dustin McQuay <dmcquay@gmail.com> (http://www.synchrosinteractive.com/)"
-, "main": "jsloader"
+, "main": "lib/main"
 , "directories": { "lib": "" }
 , "scripts": { "test": "vows test/jsloader.js" }
 , "bin": { "jsloader": "./bin/jsloader" }

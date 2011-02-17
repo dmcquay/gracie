@@ -3,7 +3,7 @@ var vows = require('vows'),
     fs = require('fs'),
     path = require('path'),
     temp = require('temp'),
-    JSLoader = require('.././jsloader.js').JSLoader,
+    JSLoader = require('../lib/jsloader.js').JSLoader,
     testSrc = './test/test-src',
     testSrcDirs = [testSrc + '/test-src-1', testSrc + '/test-src-2'];
 
