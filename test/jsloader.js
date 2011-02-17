@@ -35,9 +35,9 @@ vows.describe('JSLoader').addBatch({
             loader.getContent([], this.callback);
         },
 
-        'is an empty string': function(topic) {
-            assert.equal(typeof(topic), 'string');
-            assert.equal(topic.length, 0);
+        'is an error': function(err, topic) {
+            assert.ok(err && err.length > 0);
+            assert.isUndefined(topic);
         }
     },
 
