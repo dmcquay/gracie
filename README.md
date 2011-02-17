@@ -4,6 +4,7 @@ This is a web-service which will serve your JS files for you. It does a few spif
 
  * Concatenate a set of JS files on-the-fly so you only download one file
  * Automatically resolve dependencies
+ * Do it all really fast (fast code, cached results, support for conditional gets and gzipped responses)
 
 This allows you to accomplish the following objectives:
 
@@ -66,9 +67,9 @@ JavaScript content on-the-fly and embed it directly in the page. To do this, you
 the JavaScript in your controller and pass it to your view.
 
     var minify = true;
-    req.jsloader.getContent(['cool.js'], function(err, jsCode) {
+    req.jsloader.getContent(['cool.js'], function(err, response) {
         res.render('myview.ejs', {
-            locals: { jsCode: jsCode }   
+            locals: { jsCode: response.content }
         }); 
     }, minify);
 

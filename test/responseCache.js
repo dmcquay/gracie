@@ -5,8 +5,7 @@ var vows = require('vows'),
     temp = require('temp'),
     ResponseCache = require('../lib/responseCache').ResponseCache,
     Response = require('../lib/response').Response,
-    Request = require('../lib/request').Request,
-    File = require('../lib/file').File;
+    Request = require('../lib/request').Request;
 
 vows.describe('ResponseCache').addBatch({
     'when we create a new ResponseCache': {
@@ -24,11 +23,9 @@ vows.describe('ResponseCache').addBatch({
                 var filePath = path.join(dirPath, "a.js");
                 fs.writeFile(filePath, "abcd", function(err) {
                     var cache = new ResponseCache(),
-                        request = new Request(),
+                        request = new Request(['a.js']),
                         response = new Response();
-                        file = new File('a.js');
-                    file.resolvedPath = filePath;
-                    request.files = [file];
+                    request.files[0].resolvedPath = filePath;
                     response.content = 'abcd';
                     cache.put(request, response);
                     self.callback(null, cache.get(request));
@@ -41,6 +38,30 @@ vows.describe('ResponseCache').addBatch({
     	}
     },
 
+    'when we put a reponse and then add a file': {
+    	topic: function() {
+            var self = this;
+            temp.mkdir('jsloader-test', function(err, dirPath) {
+                var filePath = path.join(dirPath, "a.js");
+                fs.writeFile(filePath, "abcd", function(err) {
+                    var cache = new ResponseCache(),
+                        request = new Request(['a.js']),
+                        response = new Response();
+                    request.files[0].resolvedPath = filePath;
+                    response.content = 'abcd';
+                    cache.put(request, response);
+                    request.addFile('b.js');
+                    request.files[request.files.length-1].resolvedPath = path.join(dirPath, request.files[request.files.length-1].path);
+                    self.callback(null, cache.get(request));
+                });
+            });
+    	},
+    	
+    	'we can get it back out with get': function(response) {
+    		assert.equal(response && response.content, 'abcd');
+    	}
+    },
+
     'when we put a reponse & change the file': {
     	topic: function() {
             var self = this;
@@ -48,11 +69,9 @@ vows.describe('ResponseCache').addBatch({
                 var filePath = path.join(dirPath, "a.js");
                 fs.writeFile(filePath, "abcd", function(err) {
                     var cache = new ResponseCache(),
-                        request = new Request(),
+                        request = new Request(['a.js']),
                         response = new Response();
-                        file = new File('a.js');
-                    file.resolvedPath = filePath;
-                    request.files = [file];
+                    request.files[0].resolvedPath = filePath;
                     response.content = 'abcd';
                     cache.put(request, response);
                     fs.watchFile(filePath, function(oldStats, newStats) {

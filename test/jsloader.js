@@ -35,9 +35,9 @@ vows.describe('JSLoader').addBatch({
             loader.getContent([], this.callback);
         },
 
-        'is an error': function(err, topic) {
+        'is an error': function(err, response) {
             assert.ok(err && err.length > 0);
-            assert.isUndefined(topic);
+            assert.isUndefined(response);
         }
     },
 
@@ -47,8 +47,8 @@ vows.describe('JSLoader').addBatch({
             loader.getContent(['a.js'], this.callback);
         },
 
-        'is equal to the contents of that file': function(topic) {
-            assert.equal(topic, "var a = 1;\n");
+        'is equal to the contents of that file': function(response) {
+            assert.equal(response.content, "var a = 1;\n");
         }
     },
 
@@ -58,8 +58,8 @@ vows.describe('JSLoader').addBatch({
             loader.getContent(['a.js', 'b.js'], this.callback);
         },
 
-        'is equal to the contents of both files': function(topic) {
-            assert.equal(topic, "var a = 1;\nvar b = 2;\n");
+        'is equal to the contents of both files': function(response) {
+            assert.equal(response.content, "var a = 1;\nvar b = 2;\n");
         }
     },
 
@@ -69,8 +69,8 @@ vows.describe('JSLoader').addBatch({
             loader.getContent(['a.js', 'b.js', 'c.js'], this.callback);
         },
 
-        'is equal to the contents of all files': function(topic) {
-            assert.equal(topic, "var a = 1;\nvar b = 2;\nvar c = 3;\n");
+        'is equal to the contents of all files': function(response) {
+            assert.equal(response.content, "var a = 1;\nvar b = 2;\nvar c = 3;\n");
         }
     },
 
@@ -80,8 +80,8 @@ vows.describe('JSLoader').addBatch({
             loader.getContent(['d.js'], this.callback);
         },
 
-        'is equal to the contents of d and the dependency a': function(topic) {
-            assert.equal(topic, "var a = 1;\nvar d = 4;\n");
+        'is equal to the contents of d and the dependency a': function(response) {
+            assert.equal(response.content, "var a = 1;\nvar d = 4;\n");
         }
     },
 
@@ -91,8 +91,8 @@ vows.describe('JSLoader').addBatch({
             loader.getContent(['a.js', 'c.js'], this.callback);
         },
 
-        'contains the content of the dependency only once': function(topic) {
-            assert.equal(topic, "c\nb\na\n");
+        'contains the content of the dependency only once': function(response) {
+            assert.equal(response.content, "c\nb\na\n");
         }
     },
 
@@ -102,8 +102,8 @@ vows.describe('JSLoader').addBatch({
             loader.getContent(['a.js'], this.callback);
         },
 
-        'contains both dependencies': function(topic) {
-            assert.equal(topic, "b\nc\na\n");
+        'contains both dependencies': function(response) {
+            assert.equal(response.content, "b\nc\na\n");
         }
     },
 
@@ -113,8 +113,8 @@ vows.describe('JSLoader').addBatch({
             loader.getContent(['chat.js'], this.callback);
         },
 
-        'contains correct output': function(topic) {
-            assert.equal(topic, "vend/jquery-1.4.2.min.js\nvend/jquery.cookie.js\nPCHAT/controller/Chat.js\nchat.js\n");
+        'contains correct output': function(response) {
+            assert.equal(response.content, "vend/jquery-1.4.2.min.js\nvend/jquery.cookie.js\nPCHAT/controller/Chat.js\nchat.js\n");
         }
     }
 }).export(module);
