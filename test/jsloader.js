@@ -124,9 +124,9 @@ vows.describe('JSLoader').addBatch({
             temp.mkdir('jsloader-test', function(err, dirPath) {
                 var fileName = path.join(dirPath, "a.js");
                 var loader = new JSLoader([dirPath]);
-                fs.writeFileSync(fileName, "a");
+                fs.writeFileSync(fileName, "a\n");
                 loader.getContent(['a.js'], function(err, content) {
-                    fs.writeFileSync(fileName, "b");
+                    fs.writeFileSync(fileName, "b\n");
                     loader.getContent(['a.js'], function(err, content) {
                         self.callback(null, content);
                     });
