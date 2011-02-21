@@ -4,6 +4,7 @@ This is a web-service which will serve your JS files for you. It does a few spif
 
  * Concatenate a set of JS files on-the-fly so you only download one file
  * Automatically resolve dependencies
+ * Optionally minify the output
  * Do it all really fast (fast code, cached results, support for conditional gets and gzipped responses)
 
 This allows you to accomplish the following objectives:
