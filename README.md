@@ -17,7 +17,7 @@ This app is written in node.js, but is really not *for* node.js. You can use it 
 
 #Installation
 
-npm install gracie@latest
+npm install gracie
 
 #Synopsis
 
