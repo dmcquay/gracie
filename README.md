@@ -1,4 +1,4 @@
-#Node JS Loader (client-side)
+#Gracie
 
 This is a web-service which will serve your JS files for you. It does a few spiffy things:
 
@@ -16,17 +16,15 @@ This app is written in node.js, but is really not *for* node.js. You can use it 
 
 #Installation
 
-npm install js-loader@latest
+npm install gracie@latest
 
 #Synopsis
 
 ##Using as a standalone server
 
-Usage: jsloader ADDRESS PORT JS_SOURCE_DIR [JS_SOURCE_DIR...]
-
 Run the server
 
-    jsloader 127.0.0.1 1234 /path/to/js
+    gracie /path/to/js
 
 Request your files
 
@@ -44,7 +42,7 @@ You can also request minfied output
 
 And you can have multiple source directories
 
-    jsloader 127.0.0.1 1234 /path/to/js1 /path/to/js2
+    gracie /path/to/js1 /path/to/js2
 
 ##Advanced integration with Node.js projects
 
@@ -53,21 +51,21 @@ set up the connect middleware.
 
     app.configure(function() {
         ...
-        require('js-loader').JSLoader.connect('/js', ['/path/to/js'])
+        require('gracie').connect('/js', ['/path/to/js'])
         ...
     });
 
-The first parameter is the pathname that the jsloader should handle. The second is an array of javascript
+The first parameter is the pathname that Gracie should handle. The second is an array of javascript
 source directories. With this in place, you can use your existing connect server to serve your js.
 
     <script type="text/javascript" src="http://www.mysite.com/js?sources=a.js,b.js,c.js"></script>
 
-The connect middleware will also make the jsloader instance available on all requests so you can request
+The connect middleware will also make the Gracie Server instance available on all requests so you can request
 JavaScript content on-the-fly and embed it directly in the page. To do this, you'll want to generate
 the JavaScript in your controller and pass it to your view.
 
     var minify = true;
-    req.jsloader.getContent(['cool.js'], function(err, response) {
+    req.gracieServer.getContent(['cool.js'], function(err, response) {
         res.render('myview.ejs', {
             locals: { jsCode: response.content }
         }); 

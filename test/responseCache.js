@@ -19,7 +19,7 @@ vows.describe('ResponseCache').addBatch({
     'when we put a reponse': {
     	topic: function() {
             var self = this;
-            temp.mkdir('jsloader-test', function(err, dirPath) {
+            temp.mkdir('gracie-test', function(err, dirPath) {
                 var filePath = path.join(dirPath, "a.js");
                 fs.writeFile(filePath, "abcd", function(err) {
                     var cache = new ResponseCache(),
@@ -41,7 +41,7 @@ vows.describe('ResponseCache').addBatch({
     'when we put a reponse and then add a file': {
     	topic: function() {
             var self = this;
-            temp.mkdir('jsloader-test', function(err, dirPath) {
+            temp.mkdir('gracie-test', function(err, dirPath) {
                 var filePath = path.join(dirPath, "a.js");
                 fs.writeFile(filePath, "abcd", function(err) {
                     var cache = new ResponseCache(),
@@ -65,7 +65,7 @@ vows.describe('ResponseCache').addBatch({
     'when we put a reponse & change the file': {
     	topic: function() {
             var self = this;
-            temp.mkdir('jsloader-test', function(err, dirPath) {
+            temp.mkdir('gracie-test', function(err, dirPath) {
                 var filePath = path.join(dirPath, "a.js");
                 fs.writeFile(filePath, "abcd", function(err) {
                     var cache = new ResponseCache(),

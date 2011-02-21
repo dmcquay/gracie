@@ -3,16 +3,16 @@ var vows = require('vows'),
     fs = require('fs'),
     path = require('path'),
     temp = require('temp'),
-    JSLoader = require('../lib/jsloader.js').JSLoader,
+    Server = require('../lib/server.js').Server,
     testSrc = './test/test-src',
     testSrcDirs = [testSrc + '/test-src-1', testSrc + '/test-src-2'];
 
-vows.describe('JSLoader').addBatch({
-    'when we create a new JSLoader': {
-        topic: function() { return new JSLoader(testSrcDirs.concat(['/test/with/extra/slash/'])) },
+vows.describe('Server').addBatch({
+    'when we create a new Server': {
+        topic: function() { return new Server(testSrcDirs.concat(['/test/with/extra/slash/'])) },
 
-        'we get an instance of JSLoader': function(topic) {
-            assert.ok(topic instanceof JSLoader);
+        'we get an instance of Server': function(topic) {
+            assert.ok(topic instanceof Server);
         },
 
         'srcDirs is defined': function(topic) {
@@ -31,8 +31,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent with one srcDir and no files': {
         topic: function() {
-            var loader = new JSLoader([testSrcDirs[0]]);
-            loader.getContent([], this.callback);
+            var server = new Server([testSrcDirs[0]]);
+            server.getContent([], this.callback);
         },
 
         'is an error': function(err, response) {
@@ -43,8 +43,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent with one srcDir and one file': {
         topic: function() {
-            var loader = new JSLoader([testSrcDirs[0]]);
-            loader.getContent(['a.js'], this.callback);
+            var server = new Server([testSrcDirs[0]]);
+            server.getContent(['a.js'], this.callback);
         },
 
         'is equal to the contents of that file': function(response) {
@@ -54,8 +54,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent with one srcDir and two files': {
         topic: function() {
-            var loader = new JSLoader([testSrcDirs[0]]);
-            loader.getContent(['a.js', 'b.js'], this.callback);
+            var server = new Server([testSrcDirs[0]]);
+            server.getContent(['a.js', 'b.js'], this.callback);
         },
 
         'is equal to the contents of both files': function(response) {
@@ -65,8 +65,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent with two srcDirs and three files': {
         topic: function() {
-            var loader = new JSLoader(testSrcDirs);
-            loader.getContent(['a.js', 'b.js', 'c.js'], this.callback);
+            var server = new Server(testSrcDirs);
+            server.getContent(['a.js', 'b.js', 'c.js'], this.callback);
         },
 
         'is equal to the contents of all files': function(response) {
@@ -76,8 +76,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent with one file and one dependency': {
         topic: function() {
-            var loader = new JSLoader(testSrcDirs);
-            loader.getContent(['d.js'], this.callback);
+            var server = new Server(testSrcDirs);
+            server.getContent(['d.js'], this.callback);
         },
 
         'is equal to the contents of d and the dependency a': function(response) {
@@ -87,8 +87,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent with a duplicate dependency': {
         topic: function() {
-            var loader = new JSLoader([testSrc + '/duplicate-dependency']);
-            loader.getContent(['a.js', 'c.js'], this.callback);
+            var server = new Server([testSrc + '/duplicate-dependency']);
+            server.getContent(['a.js', 'c.js'], this.callback);
         },
 
         'contains the content of the dependency only once': function(response) {
@@ -98,8 +98,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent with multiple dependencies in one file': {
         topic: function() {
-            var loader = new JSLoader([testSrc + '/multi-dependencies']);
-            loader.getContent(['a.js'], this.callback);
+            var server = new Server([testSrc + '/multi-dependencies']);
+            server.getContent(['a.js'], this.callback);
         },
 
         'contains both dependencies': function(response) {
@@ -109,8 +109,8 @@ vows.describe('JSLoader').addBatch({
 
     'the result of getContent in complex example (chat)': {
         topic: function() {
-            var loader = new JSLoader([testSrc + '/chat']);
-            loader.getContent(['chat.js'], this.callback);
+            var server = new Server([testSrc + '/chat']);
+            server.getContent(['chat.js'], this.callback);
         },
 
         'contains correct output': function(response) {

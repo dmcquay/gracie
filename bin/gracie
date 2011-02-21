@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var connect = require('connect'),
-    jsloader = require('js-loader'),
+    gracie = require('gracie'),
     argv = require('optimist').argv,
     DEFAULT_PORT = '7763',
     server;
@@ -22,7 +22,7 @@ try {
     server.use(connect.logger());
     server.use(connect.gzip());
     server.use(connect.conditionalGet());
-    server.use(jsloader.connect('/jsloader', argv._));
+    server.use(gracie.connect('/gracie', argv._));
     server.listen(port, host);
     console.log('Server running at http://' + (host ? host : '*') + ':' + port + '/');
 } catch (err) {
@@ -34,7 +34,7 @@ function usage(errMsg) {
         console.log("ERROR: " + errMsg);
         console.log();
     }
-    console.log("Usage: jsloader [options] SRC_DIR [SRC_DIR...]");
+    console.log("Usage: gracie [options] SRC_DIR [SRC_DIR...]");
     console.log();
     console.log("Options:");
     console.log("\t--port | -p\tWhat port to bind to. Defaults to " + DEFAULT_PORT + ".");
