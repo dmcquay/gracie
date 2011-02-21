@@ -29,7 +29,7 @@ Run the server
 
 Request your files
 
-    <script type="text/javascript" src="http://js.mysite.com/?sources=a.js,b.js,c.js"></script>
+    <script type="text/javascript" src="http://js.mysite.com/gracie?sources=a.js,b.js,c.js"></script>
 
 And if the first line of c.js looks like this:
 
@@ -39,7 +39,7 @@ Then d.js will be included in the output.
 
 You can also request minfied output
 
-    <script type="text/javascript" src="http://js.mysite.com/?sources=a.js,b.js,c.js&minify=1"></script>
+    <script type="text/javascript" src="http://js.mysite.com/gracie?sources=a.js,b.js,c.js&minify=1"></script>
 
 And you can have multiple source directories
 
@@ -66,9 +66,9 @@ JavaScript content on-the-fly and embed it directly in the page. To do this, you
 the JavaScript in your controller and pass it to your view.
 
     var minify = true;
-    req.gracieServer.getContent(['cool.js'], function(err, response) {
+    req.gracieServer.getContent(['cool.js'], function(err, gracieResponse) {
         res.render('myview.ejs', {
-            locals: { jsCode: response.content }
+            locals: { jsCode: gracieResponse.content }
         }); 
     }, minify);
 
