@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 var connect = require('connect'),
+    cluster = require('cluster'),
     gracie = require('gracie'),
     argv = require('optimist').argv,
-    DEFAULT_PORT = '7763',
+    DEFAULT_PORT = 7763,
     server;
 
 if (argv.help) {
@@ -15,7 +16,7 @@ if (argv._.length === 0) {
 }
 
 var host = argv.host || argv.h,
-    port = process.port || argv.p || DEFAULT_PORT;
+    port = parseInt(process.port) || parseInt(argv.p) || DEFAULT_PORT;
 
 try {
     server = connect.createServer();
@@ -23,7 +24,7 @@ try {
     server.use(connect.gzip());
     server.use(connect.conditionalGet());
     server.use(gracie.connect('/gracie', argv._));
-    server.listen(port, host);
+    cluster(server).listen(port, host);
     console.log('Server running at http://' + (host ? host : '*') + ':' + port + '/');
 } catch (err) {
     usage(err);
