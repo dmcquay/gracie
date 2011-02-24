@@ -13,7 +13,7 @@
 <ul id="nav-main">
 	<li><a href="#intro">Intro</a></li>
 	<li><a href="#what">What is Gracie?</a></li>
-	<li><a href="#test">Why?</a></li>
+	<li><a href="#install">Download/Install</a></li>
 	<li><a href="#test2">How?</a></li>
 	<li><a href="#test2">Guide</a></li>
 	<li><a href="#test2">Download</a></li>
@@ -21,6 +21,7 @@
 </ul>
 
 <a name="intro"/>
+<div id="intro">
 <p>You've got some JavaScript files</p>
 <pre>-mysite
   -js
@@ -29,12 +30,16 @@
     jquery.js</pre>
 <p>amazing.js depends on jquery.js</p>
 <pre>//require jquery.js
-
-var Amazing = function...</pre>
+jQuery(document).ready(function() {
+  //do amazing stuff...
+});</pre>
 <p>Run Gracie</p>
 <pre>gracie /var/www/html/mysite/js</pre>
 <p>And load your JavaScript the good old fashioned way</p>
-<code>&lt;script type="text/javascript" src="http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;&lt;/script&gt;</code>
+<pre>&lt;script type="text/javascript" src="
+http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
+&lt;/script&gt;</pre>
+</div>
 
 <a name="what"/>
 <h2>What is Gracie?</h2>
@@ -47,21 +52,35 @@ var Amazing = function...</pre>
 	<li>Optionally minifies the JavaScript</li>
 	<li>Resolves dependencies using an extremely simple approach</li>
 </ul>
-<p>To use Gracie, you simply run the bundled server like this:</p>
-<code>gracie /path/to/js</code>
-<p>Then you request your JavaScript from the server like this:</p>
-<code>&lt;script type="text/javascript" src="http://mysite.com:7763/gracie?sources=file1.js,file2.js"&gt;&lt;/script&gt;</code>
+<p>
+	Gracie is written in Node.js. You can integrate Gracie into your Node.js projects instead
+	of using the bundled server if you want.
+</p>
+<p>
+	Gracie is very simple. You can used it with your existing JavaScript with no modifications.
+	Just start up the Gracie server and request your change your script tags to source their
+	JavaScript from the Gracie server. Optionally, you can use the //require syntax to specify
+	which files depend on which other files. Then you don't have to keep track of a long list
+	of files to load. Gracie will resolve the dependencies for you.
+</p>
 
-<a name="test"/>
-<h2>Test</h2>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
+<a name="install"/>
+<h2>Download / Install Gracie</h2>
+<p>
+	You need Node.js installed. You can get instructions at <a href="http://nodejs.org">nodejs.org</a>.
+	If you are running Ubuntu, you can just execute these commands to install v0.2.6.
+</p>
+<pre>wget http://nodejs.org/dist/node-v0.2.6.tar.gz
+tar xzf node-v0.2.6.tar.gz
+sudo apt-get update
+sudo apt-get install g++ libssl-dev
+cd node-v0.2.6
+./configure
+make
+sudo make install
+cd ..
+rm -rf node-v0.2.6
+rm node-v0.2.6.tar.gz</pre>
 
 <a name="test2"/>
 <h2>Test</h2>
