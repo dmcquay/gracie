@@ -4,7 +4,7 @@
 <link  href="http://fonts.googleapis.com/css?family=Calligraffitti:regular" rel="stylesheet" type="text/css" >
 <link rel="stylesheet" type="text/css" href="main.css" />
 </head>
-<body>
+<body id="top">
 
 <h1>Gracie</h1>
 
@@ -25,8 +25,7 @@
 	<li><a href="#performance">Performance</a></li>
 </ul>
 
-<a name="intro"></a>
-<div id="intro">
+<div class="nav-anchor" id="intro">
 <p>You've got some JavaScript files</p>
 <pre>-mysite
   -js
@@ -46,7 +45,7 @@ src="http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
 &lt;/script&gt;</pre>
 </div>
 
-<a name="what"></a>
+<a class="nav-anchor" name="what"></a>
 <h2>What is Gracie?</h2>
 <p>
 	Gracie is a lightweight file server aimed at serving JavaScript files in an optimized way.
@@ -72,7 +71,7 @@ src="http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
 	Gracie is also well unit tested and performs quite well. See <a href="#performance">Perforamnce</a>.
 </p>
 
-<a name="install"></a>
+<a class="nav-anchor" name="install"></a>
 <h2>Download / Install Gracie</h2>
 <h3>Prerequisites</h3>
 <ul>
@@ -82,10 +81,10 @@ src="http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
 <h3>Install Gracie</h3>
 <pre>npm install gracie</pre>
 
-<a name="guide"></a>
+<a class="nav-anchor" name="guide"></a>
 <h2>Guide</h2>
 
-<a name="guide-server"></a>
+<a class="nav-anchor" name="guide-server"></a>
 <h3>Bundled Server</h3>
 <p>Gracie comes with a bundled server. You have a few options when running the server.</p>
 <pre>$ gracie --help
@@ -113,7 +112,7 @@ Options:
 	Gracie.
 </p>
 
-<a name="guide-requests"></a>
+<a class="nav-anchor" name="guide-requests"></a>
 <h3>Making Requests</h3>
 <p>To request JavaScript from Gracie, just sent a GET request to the Gracie URL.</p>
 <pre>http://$hostname:$port/gracie?sources=source1.js,source2.js&minify=1</pre>
@@ -128,7 +127,7 @@ Options:
 	Minification is performed using <a href"https://github.com/mishoo/UglifyJS">UglifyJS</a>.
 </p>
 
-<a name="guide-connect"></a>
+<a class="nav-anchor" name="guide-connect"></a>
 <h3>Integration with Node.js projects using Connect</h3>
 <p>
 	If your project is written in Node.js and you are using connect, then you have two
@@ -160,7 +159,7 @@ req.gracieServer.getContent(['cool.js'], function(err, gracieResponse) {
 <p>Then, in your view, display the content. Be sure not to escape it.</p>
 <pre>&lt;script type="text/javascript"&gt;&lt;%- jsCode %&gt;&lt;/script&gt;</pre>
 
-<a name="guide-require"></a>
+<a class="nav-anchor" name="guide-require"></a>
 <h3>Require Syntax</h3>
 <p>
 	Gracie allows you to make one file depend on (or "require") another file. This prevents
@@ -186,7 +185,7 @@ req.gracieServer.getContent(['cool.js'], function(err, gracieResponse) {
 	can do wrong is to set up a cyclic dependency. Don't do that.
 </p>
 
-<a name="performance"></a>
+<a class="nav-anchor" name="performance"></a>
 <h2>Performance</h2>
 <p>Gracie performs quite well. Here's why:</p>
 <ul>
@@ -207,5 +206,14 @@ req.gracieServer.getContent(['cool.js'], function(err, gracieResponse) {
 	hardware or using multiple servers.
 </p>
 
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-165654-8");
+pageTracker._trackPageview();
+} catch(err) {}</script>
 </body>
 </html>
