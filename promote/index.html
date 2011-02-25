@@ -19,6 +19,7 @@
 			<li><a href="#guide-server">Bundled Server</a></li>
 			<li><a href="#guide-requests">Making Requests</a></li>
 			<li><a href="#guide-connect">Integrate with Connect</a></li>
+			<li><a href="#guide-require">Require Syntax</a></li>
 		</ul>
 	</li>
 	<li><a href="#performance">Performance</a></li>
@@ -80,13 +81,6 @@ src="http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
 </ul>
 <h3>Install Gracie</h3>
 <pre>npm install gracie</pre>
-
-<!--
-standalone server
-require syntax and logic
-connect middleware
--->
-
 
 <a name="guide"></a>
 <h2>Guide</h2>
@@ -165,6 +159,32 @@ req.gracieServer.getContent(['cool.js'], function(err, gracieResponse) {
 }, minify);</pre>
 <p>Then, in your view, display the content. Be sure not to escape it.</p>
 <pre>&lt;script type="text/javascript"&gt;&lt;%- jsCode %&gt;&lt;/script&gt;</pre>
+
+<a name="guide-require"></a>
+<h3>Require Syntax</h3>
+<p>
+	Gracie allows you to make one file depend on (or "require") another file. This prevents
+	you from having to request a long list of JavaScript files for a given page. In general,
+	you'll probably just have one file for a given page and everything else will be loaded
+	automatically.
+</p>
+<p>The require syntax is dead simple.</p>
+<pre>//require vend/jquery.js</pre>
+<p>
+	The require statement itself is commented out so that it does not cause any problems.
+	There are just a few rules to understand about the require statments.
+</p>
+<ul>
+	<li>They must come first in the file, with no blank lines before them.</li>
+	<li>Each require statment must only refer to one file. Multiple dependencies require multiple require statements.</li>
+	<li>The require statements get ripped out of the final output by Gracie. Think of them as preprocessor directives.</li>
+</ul>
+<p>
+	If multiple files depend on a common file (as will be common with libraries such as jQuery),
+	the common library will only be included once. You don't need to worry about the ordering in
+	which Gracie includes the files. Gracie is smart. It will "just work". The only thing you
+	can do wrong is to set up a cyclic dependency. Don't do that.
+</p>
 
 <a name="performance"></a>
 <h2>Performance</h2>
