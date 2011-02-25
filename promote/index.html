@@ -13,10 +13,12 @@
 <ul id="nav-main">
 	<li><a href="#intro">Intro</a></li>
 	<li><a href="#what">What is Gracie?</a></li>
-	<li><a href="#install">Download/Install</a></li>
+	<li><a href="#install">Download / Install</a></li>
 	<li><a href="#guide">Guide</a>
 		<ul>
 			<li><a href="#guide-server">Bundled Server</a></li>
+			<li><a href="#guide-requests">Making Requests</a></li>
+			<li><a href="#guide-connect">Integrate with Connect</a></li>
 		</ul>
 	</li>
 	<li><a href="#performance">Performance</a></li>
@@ -38,8 +40,8 @@ jQuery(document).ready(function() {
 <p>Run Gracie</p>
 <pre>gracie /var/www/html/mysite/js</pre>
 <p>And load your JavaScript the good old fashioned way</p>
-<pre>&lt;script type="text/javascript" src="
-http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
+<pre>&lt;script type="text/javascript"
+src="http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
 &lt;/script&gt;</pre>
 </div>
 
@@ -100,7 +102,7 @@ Options:
   --host | -h	Limit to connections to this host if specified.
   --help   Show this message.</pre>
 <p>
-	Note that you can specify several source directories for your JS files. This of this
+	Note that you can specify several source directories for your JS files. Think of this
 	like a PATH for your JS files.
 </p>
 <p>
@@ -116,6 +118,53 @@ Options:
 	Therefore, you can can change files during development and test without restarting
 	Gracie.
 </p>
+
+<a name="guide-requests"></a>
+<h3>Making Requests</h3>
+<p>To request JavaScript from Gracie, just sent a GET request to the Gracie URL.</p>
+<pre>http://$hostname:$port/gracie?sources=source1.js,source2.js&minify=1</pre>
+<p>
+	The sources param is a comma-delimited list of JavaScript sources relative to the
+	paths you privided the Gracie server when you started it. If the file is in a subfolder,
+	just write the whole path here.
+</p>
+<pre>http://$hostname:$port/gracie?sources=vend/jquery.js,other.js&minify=1</pre>
+<p>
+	The minify parameter is optional. If omitted, the output will NOT be minified.
+	Minification is performed using <a href"https://github.com/mishoo/UglifyJS">UglifyJS</a>.
+</p>
+
+<a name="guide-connect"></a>
+<h3>Integration with Node.js projects using Connect</h3>
+<p>
+	If your project is written in Node.js and you are using connect, then you have two
+	more options. First, set up the connect middleware.
+</p>
+<pre>app.configure(function() {
+  ...
+  require('gracie').connect('/js', ['/path/to/js'])
+  ...
+});</pre>
+<p>
+	The first parameter is the pathname that Gracie should handle. The second is an array
+	of javascript source directories. With this in place, you can use your existing connect
+	server to serve your js.
+</p>
+<pre>&lt;script type="text/javascript"
+src="http://www.mysite.com/js?sources=a.js,b.js,c.js"&gt;&lt;/script&gt;</pre>
+<p>
+	The connect middleware will also make the Gracie Server instance available on all requests so you can request
+	JavaScript content on-the-fly and embed it directly in the page. To do this, you'll want to generate
+	the JavaScript in your controller and pass it to your view.
+</p>
+<pre>var minify = true;
+req.gracieServer.getContent(['cool.js'], function(err, gracieResponse) {
+  res.render('myview.ejs', {
+    locals: { jsCode: gracieResponse.content }
+  }); 
+}, minify);</pre>
+<p>Then, in your view, display the content. Be sure not to escape it.</p>
+<pre>&lt;script type="text/javascript"&gt;&lt;%- jsCode %&gt;&lt;/script&gt;</pre>
 
 <a name="performance"></a>
 <h2>Performance</h2>
