@@ -14,13 +14,15 @@
 	<li><a href="#intro">Intro</a></li>
 	<li><a href="#what">What is Gracie?</a></li>
 	<li><a href="#install">Download/Install</a></li>
-	<li><a href="#test2">How?</a></li>
-	<li><a href="#test2">Guide</a></li>
-	<li><a href="#test2">Download</a></li>
-	<li><a href="#test2">Git</a></li>
+	<li><a href="#guide">Guide</a>
+		<ul>
+			<li><a href="#guide-server">Bundled Server</a></li>
+		</ul>
+	</li>
+	<li><a href="#performance">Performance</a></li>
 </ul>
 
-<a name="intro"/>
+<a name="intro"></a>
 <div id="intro">
 <p>You've got some JavaScript files</p>
 <pre>-mysite
@@ -41,7 +43,7 @@ http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
 &lt;/script&gt;</pre>
 </div>
 
-<a name="what"/>
+<a name="what"></a>
 <h2>What is Gracie?</h2>
 <p>
 	Gracie is a lightweight file server aimed at serving JavaScript files in an optimized way.
@@ -63,35 +65,78 @@ http://mysite.com:7763/gracie?sources=slideshow.js,amazing.js&minify=1"&gt;
 	which files depend on which other files. Then you don't have to keep track of a long list
 	of files to load. Gracie will resolve the dependencies for you.
 </p>
-
-<a name="install"/>
-<h2>Download / Install Gracie</h2>
 <p>
-	You need Node.js installed. You can get instructions at <a href="http://nodejs.org">nodejs.org</a>.
-	If you are running Ubuntu, you can just execute these commands to install v0.2.6.
+	Gracie is also well unit tested and performs quite well. See <a href="#performance">Perforamnce</a>.
 </p>
-<pre>wget http://nodejs.org/dist/node-v0.2.6.tar.gz
-tar xzf node-v0.2.6.tar.gz
-sudo apt-get update
-sudo apt-get install g++ libssl-dev
-cd node-v0.2.6
-./configure
-make
-sudo make install
-cd ..
-rm -rf node-v0.2.6
-rm node-v0.2.6.tar.gz</pre>
 
-<a name="test2"/>
-<h2>Test</h2>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
-<p>test content test content test content test content test content test content test content test content test content test content test content</p>
+<a name="install"></a>
+<h2>Download / Install Gracie</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li><a href="https://github.com/joyent/node/wiki/Installation">Install Node.js</a></li>
+<li><a href="http://npmjs.org">Install npm</a></li>
+</ul>
+<h3>Install Gracie</h3>
+<pre>npm install gracie</pre>
+
+<!--
+standalone server
+require syntax and logic
+connect middleware
+-->
+
+
+<a name="guide"></a>
+<h2>Guide</h2>
+
+<a name="guide-server"></a>
+<h3>Bundled Server</h3>
+<p>Gracie comes with a bundled server. You have a few options when running the server.</p>
+<pre>$ gracie --help
+Usage: gracie [options] SRC_DIR [SRC_DIR...]
+
+Options:
+  --port | -p	What port to bind to. Defaults to 7763.
+  --host | -h	Limit to connections to this host if specified.
+  --help   Show this message.</pre>
+<p>
+	Note that you can specify several source directories for your JS files. This of this
+	like a PATH for your JS files.
+</p>
+<p>
+	Typically you'll be running your webserver already on port 80 and will not dedicate
+	a host for Gracie. Therefore, you'll need to run it on some port other than 80.
+	Having your JS served from a weird port really isn't a big deal, so I suggest just
+	using the default port and running it on your existing webserver. But if you really
+	want to, you could dedicate a server to this and run it on port 80. I would not suggest
+	running this behind apache.
+</p>
+<p>
+	Note: Cached requests are automatically purged when underlying files are changed.
+	Therefore, you can can change files during development and test without restarting
+	Gracie.
+</p>
+
+<a name="performance"></a>
+<h2>Performance</h2>
+<p>Gracie performs quite well. Here's why:</p>
+<ul>
+<li>All requests are cached. The cached objects are expired when underlying files are modified.</li>
+<li>Supports Conditional Get requests using Last-Modified and ETag headers</li>
+<li>Supports gzip encoding of content</li>
+</ul>
+<p>
+	On a Core 2 Duo laptop with 4GB RAM, Gracie can handle about 800-1200 requests per second.
+	Cached requests are served in no more than a few milliseconds, rising up to ~50ms when load
+	is very high. Uncached minified requests take ~300ms. You could easily prime the cache if this
+	is unacceptable for you. Unminified requests very fast even when uncached.
+</p>
+<p>
+	In these tests, Gracie only consumed one CPU and a small portion of the RAM. It could be beefed
+	up a lot of needed by running multiple instances of Gracie using <a href="https://github.com/senchalabs/spark">spark</a>
+	or <a href="https://github.com/LearnBoost/cluster">cluster</a> and of course by using more serious
+	hardware or using multiple servers.
+</p>
 
 </body>
 </html>

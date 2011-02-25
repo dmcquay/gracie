@@ -10,8 +10,9 @@
 , "bin": { "gracie": "./bin/gracie" }
 , "dependencies" :
   { "connect": "=0.5.8"
+  , "optimist": "=0.1.6"
   , "temp": "=0.2.0"
-  , "uglify-js" : "=0.0.4"
+  , "uglify-js" : "=0.0.5"
   , "vows" : "=0.5.6"
   }
 , "engines": { "node": "*" }
