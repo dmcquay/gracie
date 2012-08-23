@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/dmcquay/gracie.png)](http://travis-ci.org/dmcquay/gracie)
 #Gracie
 
 This is a web-service which will serve your JS files for you. It does a few spiffy things:
