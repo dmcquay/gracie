@@ -1,3 +1,5 @@
+THIS PROJECT IS DEAD! Don't use it unless you plan on taking over maintenance of it. You've been warned. ;)
+
 #Gracie
 
 This is a web-service which will serve your JS files for you. It does a few spiffy things:
